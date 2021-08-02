@@ -10,12 +10,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val dataRepository: DataRepository): ViewModel() {
+class LoginViewModel @Inject constructor(private val dataRepository: DataRepository) : ViewModel() {
     private val _login = MutableLiveData<User>()
     val isLogin: LiveData<User> get() = _login
 
-    fun doLogin(){
-        dataRepository.login("conchobhar.phaedra@mychat.com", "123456", {
+    fun doLogin(email: String, password: String) {
+        Log.d("EMAIL", email)
+        dataRepository.login(email, password, {
             _login.postValue(it)
             Log.d("DATA", it.name)
         }, {
