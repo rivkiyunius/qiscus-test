@@ -9,7 +9,7 @@ import com.rivki.samplechatsdk.databinding.ItemViewContactBinding
 import com.rivki.samplechatsdk.model.User
 import com.rivki.samplechatsdk.util.showImage
 
-class ContactAdapter(private val diffCallback: DiffCallback = DiffCallback()): RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
+class ContactAdapter(private val diffCallback: DiffCallback = DiffCallback(), private val listener: (User) -> Unit): RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
 
     private val listUser = mutableListOf<User?>()
 
@@ -19,12 +19,12 @@ class ContactAdapter(private val diffCallback: DiffCallback = DiffCallback()): R
     }
 
     override fun onBindViewHolder(holder: ContactAdapter.ViewHolder, position: Int) {
-        listUser[position]?.let { holder.bind(it) }
+        listUser[position]?.let { holder.bind(it, listener) }
     }
 
     override fun getItemCount(): Int = listUser.size
 
-    fun setMovie(users: List<User?>){
+    fun setContact(users: List<User?>){
         calculateDiff(users)
     }
 
@@ -39,10 +39,13 @@ class ContactAdapter(private val diffCallback: DiffCallback = DiffCallback()): R
     }
 
     inner class ViewHolder(private var itemViewContact: ItemViewContactBinding): RecyclerView.ViewHolder(itemViewContact.root) {
-        fun bind(user: User){
+        fun bind(user: User, listener: (User) -> Unit){
             with(itemViewContact){
                 imgContact.showImage(user.avatarUrl)
                 tvName.text = user.name
+                itemView.setOnClickListener {
+                    listener.invoke(user)
+                }
             }
         }
     }

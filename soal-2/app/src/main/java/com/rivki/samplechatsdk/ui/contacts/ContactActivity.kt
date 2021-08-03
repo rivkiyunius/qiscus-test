@@ -7,6 +7,7 @@ import com.rivki.samplechatsdk.R
 import com.rivki.samplechatsdk.base.BaseActivity
 import com.rivki.samplechatsdk.base.DiffCallback
 import com.rivki.samplechatsdk.databinding.ActivityContactBinding
+import com.rivki.samplechatsdk.ui.chatroom.ChatRoomActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -24,7 +25,9 @@ class ContactActivity: BaseActivity() {
         setContentView(contactBinding.root)
         viewModel.fetchContact()
         layoutManagers = LinearLayoutManager(this)
-        contactAdapter = ContactAdapter(diffCallback)
+        contactAdapter = ContactAdapter(diffCallback){
+            viewModel.createChatRoom(it)
+        }
         with(contactBinding.rvChats){
             layoutManager = layoutManagers
             adapter = contactAdapter
@@ -32,8 +35,14 @@ class ContactActivity: BaseActivity() {
     }
 
     override fun observeData() {
-        viewModel.getContact.onResult {
-            contactAdapter.setMovie(it)
+        with(viewModel){
+            getContact.onResult {
+                contactAdapter.setContact(it)
+            }
+            chatRoom.onResult {
+                startActivity(ChatRoomActivity.generateIntent(this@ContactActivity, it))
+                finish()
+            }
         }
     }
 }

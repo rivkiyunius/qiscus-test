@@ -3,11 +3,13 @@ package com.rivki.samplechatsdk.repository
 import com.qiscus.sdk.chat.core.QiscusCore
 import com.qiscus.sdk.chat.core.data.model.QiscusAccount
 import com.qiscus.sdk.chat.core.data.model.QiscusChatRoom
+import com.qiscus.sdk.chat.core.data.model.QiscusComment
 import com.qiscus.sdk.chat.core.data.remote.QiscusApi
 import com.rivki.samplechatsdk.model.User
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.*
 import javax.inject.Inject
 
 
@@ -53,8 +55,52 @@ class DataRepositoryImpl @Inject constructor() : DataRepository {
         QiscusApi.getInstance()
             .getAllChatRooms(true, false, true, 1, 100)
             .flatMap { iterable: List<QiscusChatRoom?>? -> Observable.from(iterable) }
-            .doOnNext{qiscusChatRoom -> QiscusCore.getDataStore().addOrUpdate(qiscusChatRoom)}
+            .doOnNext { qiscusChatRoom -> QiscusCore.getDataStore().addOrUpdate(qiscusChatRoom) }
             .filter { chatRoom -> chatRoom?.lastComment?.id != 0L }
+            .toList()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onSuccess, onError)
+    }
+
+    override fun createChatRoom(
+        user: User,
+        onSuccess: (QiscusChatRoom) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val savedChatRoom = QiscusCore.getDataStore().getChatRoom(user.id)
+        if (savedChatRoom != null) {
+            onSuccess.invoke(savedChatRoom)
+            return
+        }
+        QiscusApi.getInstance().chatUser(user.id, null)
+            .doOnNext { chatRoom -> QiscusCore.getDataStore().addOrUpdate(chatRoom) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onSuccess, onError)
+    }
+
+    override fun sendMessage(
+        qiscusComment: QiscusComment,
+        onSuccess: (QiscusComment) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        QiscusApi.getInstance().sendMessage(qiscusComment)
+            .doOnSubscribe { QiscusCore.getDataStore().addOrUpdate(qiscusComment) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onSuccess, onError)
+    }
+
+    override fun loadComments(
+        roomId: Long,
+        onSuccess: (List<QiscusComment>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        QiscusApi.getInstance().getPreviousMessagesById(roomId, 50)
+            .doOnNext {
+                QiscusCore.getDataStore().addOrUpdate(it)
+            }
             .toList()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
