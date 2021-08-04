@@ -2,8 +2,8 @@ package com.rivki.samplechatsdk.ui.roomlist
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rivki.samplechatsdk.R
 import com.rivki.samplechatsdk.base.BaseActivity
@@ -11,6 +11,8 @@ import com.rivki.samplechatsdk.base.DiffCallback
 import com.rivki.samplechatsdk.databinding.ActivityRoomListBinding
 import com.rivki.samplechatsdk.ui.chatroom.ChatRoomActivity
 import com.rivki.samplechatsdk.ui.contacts.ContactActivity
+import com.rivki.samplechatsdk.util.showView
+import com.rivki.samplechatsdk.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -25,6 +27,8 @@ class RoomListActivity: BaseActivity() {
     override fun onViewReady(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_room_list)
         setContentView(activityRoomListBinding.root)
+        supportActionBar?.title = "List Chat"
+
         viewModel.fetchChatsUser()
         linearLayout = LinearLayoutManager(this)
         adapter = RoomListAdapter(diffCallback){
@@ -34,6 +38,7 @@ class RoomListActivity: BaseActivity() {
             rvChats.let {
                 it.layoutManager = linearLayout
                 it.adapter = adapter
+                it.addItemDecoration(DividerItemDecoration(this@RoomListActivity, LinearLayoutManager.VERTICAL))
             }
         }
         activityRoomListBinding.fabChat.setOnClickListener {
@@ -50,6 +55,16 @@ class RoomListActivity: BaseActivity() {
         with(viewModel){
             dataChats.onResult { data ->
                 adapter.setListChatRoom(data)
+                activityRoomListBinding.rvChats.showView(true)
+                activityRoomListBinding.tvEmptyChat.showView(false)
+            }
+            isLoading.onResult { activityRoomListBinding.progressBar.showView(it) }
+            isError.onResult { it.showToast(this@RoomListActivity) }
+            isEmpty.onResult { status ->
+                activityRoomListBinding.let {
+                    it.tvEmptyChat.showView(status)
+                    it.rvChats.showView(!status)
+                }
             }
         }
     }

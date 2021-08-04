@@ -9,12 +9,16 @@ import com.rivki.samplechatsdk.databinding.ItemViewContactBinding
 import com.rivki.samplechatsdk.model.User
 import com.rivki.samplechatsdk.util.showImage
 
-class ContactAdapter(private val diffCallback: DiffCallback = DiffCallback(), private val listener: (User) -> Unit): RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
+class ContactAdapter(
+    private val diffCallback: DiffCallback = DiffCallback(),
+    private val listener: (User) -> Unit
+) : RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
 
     private val listUser = mutableListOf<User?>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactAdapter.ViewHolder {
-        val itemViewContact = ItemViewContactBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemViewContact =
+            ItemViewContactBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(itemViewContact)
     }
 
@@ -24,23 +28,24 @@ class ContactAdapter(private val diffCallback: DiffCallback = DiffCallback(), pr
 
     override fun getItemCount(): Int = listUser.size
 
-    fun setContact(users: List<User?>){
+    fun setContact(users: List<User?>) {
         calculateDiff(users)
     }
 
-    private fun calculateDiff(newData: List<User?>){
+    private fun calculateDiff(newData: List<User?>) {
         diffCallback.setList(listUser, newData)
         val result = DiffUtil.calculateDiff(diffCallback)
-        with(listUser){
+        with(listUser) {
             clear()
             addAll(newData)
         }
         result.dispatchUpdatesTo(this)
     }
 
-    inner class ViewHolder(private var itemViewContact: ItemViewContactBinding): RecyclerView.ViewHolder(itemViewContact.root) {
-        fun bind(user: User, listener: (User) -> Unit){
-            with(itemViewContact){
+    inner class ViewHolder(private var itemViewContact: ItemViewContactBinding) :
+        RecyclerView.ViewHolder(itemViewContact.root) {
+        fun bind(user: User, listener: (User) -> Unit) {
+            with(itemViewContact) {
                 imgContact.showImage(user.avatarUrl)
                 tvName.text = user.name
                 itemView.setOnClickListener {

@@ -87,7 +87,8 @@ class ChatRoomFragment: Fragment() {
 
     @Subscribe
     fun onCommentReceivedEvent(event: QiscusCommentReceivedEvent){
-        if(event.qiscusComment.roomId == chatRoom?.id){
+        Log.d("SUBSCRIBE", event.qiscusComment.message)
+        if(event.qiscusComment.roomId == chatRoom?.id && event.qiscusComment.sender != chatRoom?.name){
             adapter.addOrUpdateChat(event.qiscusComment)
         }
     }

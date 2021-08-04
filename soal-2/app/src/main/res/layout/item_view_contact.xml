@@ -8,8 +8,8 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_contact"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_account_circle"
         tools:srcCompat="@tools:sample/avatars[3]"
         app:shapeAppearanceOverlay="@style/circleImageViewStyle"
@@ -20,7 +20,7 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Contact Name"
+        tools:text="@string/contact_name"
         android:layout_marginStart="16dp"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@id/img_contact"

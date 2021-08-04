@@ -17,15 +17,18 @@ class DataRepositoryImpl @Inject constructor() : DataRepository {
     override fun login(
         email: String,
         password: String,
-        onSucces: (User) -> Unit,
+        onSuccess: (User) -> Unit,
+        onLoading: (Boolean) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         QiscusCore.setUser(email, password)
             .save()
             .map(this::mapFromQiscusAccount)
+            .doOnSubscribe{ onLoading.invoke(true)}
+            .doOnTerminate { onLoading.invoke(false) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(onSucces, onError)
+            .subscribe(onSuccess, onError)
     }
 
     override fun getUsers(
@@ -33,6 +36,7 @@ class DataRepositoryImpl @Inject constructor() : DataRepository {
         limit: Long,
         searchUsername: String,
         onSuccess: (List<User>) -> Unit,
+        onLoading: (Boolean) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         QiscusApi.getInstance().getUsers(searchUsername, page, limit)
@@ -43,6 +47,8 @@ class DataRepositoryImpl @Inject constructor() : DataRepository {
                 mapFromQiscusAccount(qiscusAccount!!)
             }
             .toList()
+            .doOnSubscribe { onLoading.invoke(true) }
+            .doOnTerminate { onLoading.invoke(false) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(onSuccess, onError)
@@ -50,6 +56,7 @@ class DataRepositoryImpl @Inject constructor() : DataRepository {
 
     override fun getChatsRoom(
         onSuccess: (List<QiscusChatRoom?>) -> Unit,
+        onLoading: (Boolean) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         QiscusApi.getInstance()
@@ -58,6 +65,8 @@ class DataRepositoryImpl @Inject constructor() : DataRepository {
             .doOnNext { qiscusChatRoom -> QiscusCore.getDataStore().addOrUpdate(qiscusChatRoom) }
             .filter { chatRoom -> chatRoom?.lastComment?.id != 0L }
             .toList()
+            .doOnSubscribe { onLoading.invoke(true) }
+            .doOnTerminate { onLoading.invoke(false) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(onSuccess, onError)

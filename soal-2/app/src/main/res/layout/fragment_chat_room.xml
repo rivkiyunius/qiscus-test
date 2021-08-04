@@ -17,7 +17,12 @@
     <EditText
         android:id="@+id/edt_text_field"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="@drawable/rounded_edit_text"
+        android:layout_marginEnd="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_send"/>
@@ -25,9 +30,10 @@
     <Button
         android:id="@+id/btn_send"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send"
+        android:layout_height="50dp"
+        android:text="@string/kirim"
+        app:layout_constraintTop_toTopOf="@id/edt_text_field"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="@id/edt_text_field"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

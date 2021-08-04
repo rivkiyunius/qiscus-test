@@ -24,6 +24,7 @@ class ChatRoomActivity: BaseActivity() {
     override fun onViewReady(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_chat_room)
         setContentView(bindingChatRoomActivity.root)
+        supportActionBar?.hide()
         init()
     }
 

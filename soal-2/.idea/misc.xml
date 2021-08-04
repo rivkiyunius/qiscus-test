@@ -4,12 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/item_view_contact.xml" value="0.11296296296296296" />
+        <entry key="app/src/main/res/drawable/rounded_edit_text.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/layout/activity_chat_room.xml" value="0.10866261398176291" />
         <entry key="app/src/main/res/layout/activity_contact.xml" value="0.10764944275582573" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.10764944275582573" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_room_list.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_chat_room.xml" value="0.1540020263424519" />
+        <entry key="app/src/main/res/layout/fragment_chat_room.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_view_contact.xml" value="0.21" />
         <entry key="app/src/main/res/layout/item_view_messages.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_view_my_text.xml" value="0.25" />

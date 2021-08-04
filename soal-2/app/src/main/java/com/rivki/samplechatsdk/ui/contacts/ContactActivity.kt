@@ -8,6 +8,8 @@ import com.rivki.samplechatsdk.base.BaseActivity
 import com.rivki.samplechatsdk.base.DiffCallback
 import com.rivki.samplechatsdk.databinding.ActivityContactBinding
 import com.rivki.samplechatsdk.ui.chatroom.ChatRoomActivity
+import com.rivki.samplechatsdk.util.showToast
+import com.rivki.samplechatsdk.util.showView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -23,6 +25,8 @@ class ContactActivity: BaseActivity() {
     override fun onViewReady(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_contact)
         setContentView(contactBinding.root)
+        
+        supportActionBar?.title = "Pilih Kontak"
         viewModel.fetchContact()
         layoutManagers = LinearLayoutManager(this)
         contactAdapter = ContactAdapter(diffCallback){
@@ -43,6 +47,8 @@ class ContactActivity: BaseActivity() {
                 startActivity(ChatRoomActivity.generateIntent(this@ContactActivity, it))
                 finish()
             }
+            isLoading.onResult { contactBinding.progressBar.showView(it) }
+            isError.onResult { it.showToast(this@ContactActivity) }
         }
     }
 }
