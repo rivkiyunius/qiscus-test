@@ -9,5 +9,6 @@ class BaseApp: Application(){
     override fun onCreate() {
         super.onCreate()
         QiscusCore.setup(this, "sdksample")
+        QiscusCore.getChatConfig().enableDebugMode(true)
     }
 }

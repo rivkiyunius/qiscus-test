@@ -21,6 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.roomlist.RoomListActivity"/>
+        <activity android:name=".ui.contacts.ContactActivity"/>
+        <activity android:name=".ui.chatroom.ChatRoomActivity"/>
     </application>
 
 </manifest>
